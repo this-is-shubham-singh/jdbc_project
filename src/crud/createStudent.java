@@ -2,9 +2,11 @@ package crud;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 public class createStudent {
     public static void main(String[] args) {
@@ -13,17 +15,44 @@ public class createStudent {
         String user = "root";
         String password = "@Durant333";
 
-        String query = "SELECT * FROM students";
+        String query = "insert into students (name, course) values (?, ?)";
+        Connection conn = null;
+        Scanner sc = new Scanner(System.in);
 
-        // Connection conn = null;
+        System.out.println("enter name");
+        String name = sc.next();
 
-        // try {
+        System.out.println("enter course");
+        String course = sc.next();
 
-        // } catch (SQLException e) {
-        //     e.printStackTrace();
-        // }
-        // finally {
-        // }
+        try {
+
+            // connection
+            conn = DriverManager.getConnection(url, user, password);
+
+            // create prepared statement
+            PreparedStatement pr = conn.prepareStatement(query);
+
+            // set values in prepared statement 
+            pr.setString(1, name);
+            pr.setString(2, course);
+
+            pr.executeUpdate();
+
+            System.out.println("data inserted");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            sc.close();
+        }
 
     }
 }

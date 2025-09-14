@@ -6,45 +6,55 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class deleteStudent {
+public class updateStudent {
 
     public static void main(String[] args) {
-
         String url = "jdbc:mysql://localhost:3306/jdbc_crud";
         String user = "root";
         String password = "@Durant333";
-        String query = "delete from students where id=?";
         Connection conn = null;
-
+        String query = "update students set course = ? where id = ?";
         Scanner sc = new Scanner(System.in);
-        System.out.println("enter id to be deleted");
 
-        int idValue = sc.nextInt();
+        System.out.println("enter id to be updated");
+        int id = sc.nextInt();
+
+        System.out.println("enter course to be updated");
+        String course = sc.next();
 
         try {
+
             // connection
             conn = DriverManager.getConnection(url, user, password);
 
-            // prepare statement
+            // prepared statement
             PreparedStatement pr = conn.prepareStatement(query);
+            
+            // set prepared statement values 
+            pr.setString(1, course);
+            pr.setInt(2, id);
 
-            pr.setInt(1, idValue);
-
+            // execute update prepared statement 
             pr.executeUpdate();
 
-            System.out.println("student removed");
+            System.out.println("data updated");
+
         } catch (SQLException e) {
             e.printStackTrace();
-
         } finally {
             try {
+
                 if (conn != null) {
                     conn.close();
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
+
             }
+
             sc.close();
         }
     }
+
 }
