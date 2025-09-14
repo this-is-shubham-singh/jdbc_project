@@ -2,48 +2,49 @@ package crud;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.sql.Statement;
 
-public class deleteStudent {
-
-    public static void main(String[] args) {
+public class readStudent {
+    public static void main(String[] args) throws SQLException {
 
         String url = "jdbc:mysql://localhost:3306/jdbc_crud";
         String user = "root";
         String password = "@Durant333";
-        String query = "delete from students where id=?";
+
+        String query = "SELECT * FROM students";
+
         Connection conn = null;
 
-        Scanner sc = new Scanner(System.in);
-        System.out.println("enter id to be deleted");
-
-        int idValue = sc.nextInt();
-
         try {
+
             // connection
             conn = DriverManager.getConnection(url, user, password);
 
-            // prepare statement
-            PreparedStatement pr = conn.prepareStatement(query);
+            // create statement
+            Statement stmt = conn.createStatement();
 
-            pr.setInt(1, idValue);
+            // execute query
+            ResultSet rs = stmt.executeQuery(query);
 
-            pr.executeUpdate();
+            // process result
+            while (rs.next()) {
+                System.out.println(rs.getInt("id") + " " + rs.getString("name") + " " + rs.getString("course"));
+            }
 
-            System.out.println("student removed");
         } catch (SQLException e) {
             e.printStackTrace();
-
         } finally {
             try {
                 if (conn != null) {
+
                     conn.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+
     }
 }
